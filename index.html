@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CraftKit - Alat Minecraft untuk Android</title>
+<meta name="description" content="CraftKit: editor NBT, server.properties, skin, dan kotak alat Minecraft untuk Android.">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<style>
+:root{--bg:#fff;--sf:#f1f3f4;--tx:#1f1f1f;--mu:#5f6368;--ln:#dadce0;--ac:#01875f;--acx:#fff}
+@media(prefers-color-scheme:dark){:root{--bg:#131314;--sf:#1e1f20;--tx:#e3e3e3;--mu:#9aa0a6;--ln:#3c4043;--ac:#5bd9a7;--acx:#00382a}}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--tx);font:400 14px/1.5 Roboto,"Segoe UI",system-ui,sans-serif}
+svg.i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+a{color:inherit}
+.top{display:flex;align-items:center;gap:12px;height:64px;padding:0 24px;border-bottom:1px solid var(--ln);position:sticky;top:0;background:var(--bg);z-index:9}
+.top img{width:32px;height:32px;border-radius:8px}.top b{font-size:20px;font-weight:500;flex:1}
+.top a{display:flex;padding:8px;border-radius:50%;color:var(--mu)}.top a:hover{background:var(--sf)}
+main{max-width:960px;margin:0 auto;padding:32px 24px 64px}
+.hero{display:flex;gap:28px;align-items:flex-start}
+.hero>img{width:128px;height:128px;border-radius:28px;image-rendering:pixelated;box-shadow:0 1px 3px #0004}
+h1{font:500 32px/1.2 "Google Sans",Roboto,sans-serif}
+.dev{color:var(--ac);font-weight:500;font-size:15px;margin:4px 0 2px;display:inline-block;text-decoration:none}
+.sub{color:var(--mu)}
+.act{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 24px;border-radius:20px;font:500 14px inherit;font-family:inherit;border:1px solid var(--ln);background:none;color:var(--ac);cursor:pointer;text-decoration:none}
+.btn.p{background:var(--ac);color:var(--acx);border-color:var(--ac)}
+.btn svg{width:20px;height:20px}
+.stats{display:flex;margin:32px 0;overflow-x:auto}
+.st{flex:1 0 120px;text-align:center;padding:0 16px;border-left:1px solid var(--ln)}.st:first-child{border:0}
+.st b{display:flex;justify-content:center;align-items:center;gap:6px;font-size:15px;font-weight:500;height:24px}
+.st span{color:var(--mu);font-size:12px}
+.shots{display:flex;gap:12px;overflow-x:auto;padding:4px 0 12px;scroll-snap-type:x proximity}
+.shots img{height:440px;aspect-ratio:1080/2280;border-radius:16px;border:1px solid var(--ln);scroll-snap-align:start;cursor:zoom-in;background:var(--sf)}
+h2{font:500 20px/1.3 "Google Sans",Roboto,sans-serif;margin:36px 0 12px}
+p{color:var(--mu);max-width:720px}
+.feat{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:16px}
+.feat div{background:var(--sf);border-radius:12px;padding:16px;display:flex;gap:12px}
+.feat b{display:block;font-weight:500}.feat small{color:var(--mu);font-size:13px}
+.log{border:1px solid var(--ln);border-radius:12px;margin-bottom:12px}
+.log summary{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;list-style:none}
+.log summary::-webkit-details-marker{display:none}
+.log summary b{font-weight:500;flex:1}.log summary span{color:var(--mu)}
+.log[open] summary .ch{transform:rotate(90deg)}.ch{transition:transform .2s}
+.log ul{padding:0 16px 16px 40px;color:var(--mu)}.log li{margin:4px 0}
+.log .dl{margin:0 16px 16px}
+.info{width:100%;border-collapse:collapse;max-width:720px}
+.info td{padding:10px 0;border-bottom:1px solid var(--ln)}.info td:first-child{color:var(--mu);width:40%}
+.note{display:flex;gap:12px;background:var(--sf);border-radius:12px;padding:16px;max-width:720px;color:var(--mu)}
+footer{border-top:1px solid var(--ln);padding:24px;text-align:center;color:var(--mu);font-size:13px}
+#zoom{position:fixed;inset:0;background:#000d;display:none;align-items:center;justify-content:center;z-index:20;cursor:zoom-out}
+#zoom img{max-height:94vh;max-width:94vw;border-radius:16px}#zoom.on{display:flex}
+@media(max-width:640px){main{padding:20px 16px}.hero{gap:16px}.hero>img{width:80px;height:80px;border-radius:18px}h1{font-size:24px}.shots img{height:360px}.act .btn.p{flex:1;justify-content:center}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="dl" viewBox="0 0 24 24"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/></symbol>
+<symbol id="gh" viewBox="0 0 24 24"><path d="M8 8l-5 4 5 4M16 8l5 4-5 4M14 5l-4 14"/></symbol>
+<symbol id="sh" viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.500"/><circle cx="18" cy="6" r="2.500"/><circle cx="18" cy="18" r="2.500"/><path d="M8 11l8-4M8 13l8 4"/></symbol>
+<symbol id="bx" viewBox="0 0 24 24"><path d="M12 3l8 4v10l-8 4-8-4V7l8-4zM4 7l8 4 8-4M12 11v10"/></symbol>
+<symbol id="ph" viewBox="0 0 24 24"><rect x="7" y="2.500" width="10" height="19" rx="2"/><path d="M11 18.500h2"/></symbol>
+<symbol id="tg" viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8L3 12z"/><circle cx="7.500" cy="8.500" r="1.200"/></symbol>
+<symbol id="ft" viewBox="0 0 24 24"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/></symbol>
+<symbol id="cv" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+<symbol id="nbt" viewBox="0 0 24 24"><path d="M4 5h6v4H4zM14 11h6v4h-6zM14 17h6v4h-6zM7 9v10h7M7 13h7"/></symbol>
+<symbol id="srv" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="6"/><rect x="3" y="14" width="18" height="6"/><path d="M7 7h1M7 17h1"/></symbol>
+<symbol id="fc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 10v1M16 10v1M8 15c2 2 6 2 8 0"/></symbol>
+<symbol id="tl" viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></symbol>
+<symbol id="sd" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.500 8-8 9-4.500-1-8-4-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></symbol>
+</defs></svg>
+
+<header class="top">
+  <img src="assets/icon.svg" alt="">
+  <b>CraftKit Store</b>
+  <a href="#" id="gh1" aria-label="GitHub"><svg class="i"><use href="#gh"/></svg></a>
+</header>
+
+<main>
+  <section class="hero">
+    <img src="assets/icon.svg" alt="Ikon CraftKit">
+    <div>
+      <h1>CraftKit</h1>
+      <a class="dev" href="#" id="devlink">aether</a>
+      <div class="sub">Alat Minecraft</div>
+      <div class="act">
+        <a class="btn p" id="install" href="#"><svg class="i"><use href="#dl"/></svg>Unduh APK</a>
+        <button class="btn" id="share"><svg class="i"><use href="#sh"/></svg>Bagikan</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats">
+    <div class="st"><b id="sz">APK</b><span>Ukuran</span></div>
+    <div class="st"><b><svg class="i"><use href="#ph"/></svg>10+</b><span>Android</span></div>
+    <div class="st"><b id="vr">1.0.0</b><span>Versi</span></div>
+    <div class="st"><b id="dc">-</b><span>Unduhan</span></div>
+  </section>
+
+  <div class="shots" id="shots"></div>
+
+  <h2>Tentang aplikasi</h2>
+  <p>CraftKit mengumpulkan alat yang biasa dibutuhkan pemain dan admin server Minecraft dalam satu aplikasi. Edit file dunia, atur server, buat skin, sampai hitung XP, semuanya di HP tanpa perlu komputer.</p>
+  <div class="feat">
+    <div><svg class="i"><use href="#nbt"/></svg><span><b>Editor NBT</b><small>Buka level.dat, playerdata, dan file .nbt. Java dan Bedrock terbaca otomatis.</small></span></div>
+    <div><svg class="i"><use href="#srv"/></svg><span><b>server.properties</b><small>Ubah pengaturan server lewat tombol dan kolom, atau buat dari template.</small></span></div>
+    <div><svg class="i"><use href="#fc"/></svg><span><b>Editor Skin</b><small>Gambar di model 3D atau peta 2D, lengkap dengan cermin, balik, dan warna.</small></span></div>
+    <div><svg class="i"><use href="#bx"/></svg><span><b>Skin Pack</b><small>Kumpulkan banyak skin dan ekspor jadi add-on .mcaddon.</small></span></div>
+    <div><svg class="i"><use href="#tl"/></svg><span><b>Kotak Alat</b><small>11 alat: UUID, MOTD, koordinat, XP, /give, whitelist, seed, dan lainnya.</small></span></div>
+  </div>
+
+  <h2>Yang baru</h2>
+  <div id="log"></div>
+
+  <h2>Info aplikasi</h2>
+  <table class="info">
+    <tr><td>Pengembang</td><td>aether</td></tr>
+    <tr><td>Nama paket</td><td>com.aether.craftkit</td></tr>
+    <tr><td>Versi terbaru</td><td id="iv">1.0.0</td></tr>
+    <tr><td>Dirilis</td><td id="id">4 November 2026</td></tr>
+    <tr><td>Syarat sistem</td><td>Android 10 atau lebih baru</td></tr>
+    <tr><td>Izin</td><td>Internet</td></tr>
+  </table>
+
+  <h2>Keamanan</h2>
+  <div class="note"><svg class="i"><use href="#sd"/></svg><span>APK ditandatangani dengan kunci tetap, jadi pembaruan bisa dipasang di atas versi lama. Aktifkan "Instal dari sumber tidak dikenal" untuk browser yang kamu pakai saat memasang.</span></div>
+</main>
+
+<footer>CraftKit oleh aether. Bukan produk Google Play atau Mojang. Minecraft adalah merek dagang Mojang AB.</footer>
+<div id="zoom"><img alt=""></div>
+
+<script>
+const CFG={owner:"aetheramjah",repo:"craftkit-store",dev:"https://github.com/aetheramjah"};
+const SHOTS=["s0","s1","s2","s3","s4","s5","s6"].map(n=>`assets/${n}.webp`);
+const FALLBACK=[{tag:"v1.0.0",date:"2026-11-04",notes:[
+ "Editor skin lengkap: model 3D, peta 2D, cermin, balik, isi warna, dan geser model saat zoom",
+ "Skin Pack: tambah banyak skin sekaligus dan ekspor ke add-on .mcaddon",
+ "Skin bawaan dan tekstur acak untuk mulai cepat",
+ "Kotak Alat berisi 11 alat untuk pemain dan admin server",
+ "Editor NBT dan server.properties dengan deteksi Java atau Bedrock otomatis",
+ "Ikon baru dan tampilan tanpa emoji atau simbol teks",
+ "Penandatanganan APK dengan kunci tetap"],assets:[]}];
+const $=id=>document.getElementById(id);
+const fmtD=s=>new Date(s).toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"});
+const fmtS=b=>b>=1048576?(b/1048576).toFixed(1)+" MB":Math.round(b/1024)+" KB";
+const dlUrl=a=>a?a.browser_download_url:`https://github.com/${CFG.owner}/${CFG.repo}/releases`;
+function parse(body){const l=(body||"").split("\n").map(x=>x.replace(/^\s*[-*]\s*/,"").trim()).filter(x=>x&&!x.startsWith("#")&&!x.startsWith("**Full"));return l.length?l:null}
+function render(rels){
+  const top=rels[0],apk=(top.assets||[]).find(a=>a.name.endsWith(".apk"));
+  $("install").href=dlUrl(apk);$("vr").textContent=top.tag.replace(/^v/,"");$("iv").textContent=top.tag.replace(/^v/,"");
+  $("id").textContent=fmtD(top.date);
+  if(apk){$("sz").textContent=fmtS(apk.size);}
+  const total=rels.reduce((n,r)=>n+(r.assets||[]).reduce((m,a)=>m+(a.download_count||0),0),0);
+  $("dc").textContent=total;
+  $("log").innerHTML=rels.map((r,i)=>{const a=(r.assets||[]).find(x=>x.name.endsWith(".apk"));
+    return `<details class="log" ${i?"":"open"}><summary><svg class="i ch"><use href="#cv"/></svg><b>Versi ${r.tag.replace(/^v/,"")}</b><span>${fmtD(r.date)}</span></summary><ul>${r.notes.map(n=>`<li>${n.replace(/</g,"&lt;")}</li>`).join("")}</ul><a class="btn dl" href="${dlUrl(a)}"><svg class="i"><use href="#dl"/></svg>${a?a.name:"Unduh"}</a></details>`}).join("");
+}
+render(FALLBACK);
+fetch(`https://api.github.com/repos/${CFG.owner}/${CFG.repo}/releases`).then(r=>r.ok?r.json():Promise.reject()).then(j=>{
+  const rels=j.filter(r=>!r.draft&&!r.prerelease).map(r=>({tag:r.tag_name,date:r.published_at,notes:parse(r.body)||FALLBACK[0].notes,assets:r.assets}));
+  if(rels.length)render(rels);
+}).catch(()=>{});
+$("shots").innerHTML=SHOTS.map((s,i)=>`<img src="${s}" alt="Tangkapan layar ${i+1}" loading="lazy">`).join("");
+$("devlink").href=CFG.dev;$("gh1").href=CFG.dev;
+$("shots").onclick=e=>{if(e.target.tagName=="IMG"){$("zoom").firstElementChild.src=e.target.src;$("zoom").classList.add("on")}};
+$("zoom").onclick=()=>$("zoom").classList.remove("on");
+$("share").onclick=async()=>{try{await navigator.share({title:"CraftKit",url:location.href})}catch(e){try{await navigator.clipboard.writeText(location.href);$("share").lastChild.textContent="Tersalin"}catch(_){}}};
+</script>
+</body>
+</html>
